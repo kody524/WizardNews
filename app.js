@@ -1,11 +1,17 @@
 const express = require("express");
 const app = express();
 const morgan = require("morgan")
+var timeAgo = require('node-time-ago');
 app.use(express.static('public'))
 const postBank = require("./postBank")
 app.use(morgan('dev'));
+
 app.get("/", (req, res) =>{
 const posts = postBank.list()
+
+
+
+
 
 const html = `<!DOCTYPE html>
 <html>
@@ -16,7 +22,8 @@ const html = `<!DOCTYPE html>
 <body>
   <div class="news-list">
     <header><img src="/logo.png"/>Wizard News</header>
-    ${posts.map(post => `
+    ${posts.map(post => 
+      `
       <div class='news-item'>
         <p>
           <span class="news-position">${post.id}. ▲</span>
@@ -43,7 +50,20 @@ app.get('/posts/:id', (req, res) => {
     throw new Error(
       app.use((err, req, res, next) => {
         console.error(err.stack)
-        res.status(500).send('Something broke!')
+        res.status(500).send(`<!DOCTYPE html>
+          <html>
+          <head>
+            <title>Wizard News</title>
+            <link rel="stylesheet" href="/style.css" />
+          </head>
+          <body>
+            <header><img src="/logo.png"/>Wizard News</header>
+            <div class="not-found">
+              <p>Accio Page! 🧙‍♀️ ... Page Not Found</p>
+              <img src="/dumbledore-404.gif" />
+            </div>
+          </body>
+          </html>`)
       })
     )
   }
