@@ -92,7 +92,7 @@ app.get("/posts/:id", (req, res) => {
   res.send(html);
 });
 
-const PORT = 1337;
+const { PORT = 1337 } = process.env;
 
 app.listen(PORT, () => {
   console.log(`App listening in port ${PORT}`);
