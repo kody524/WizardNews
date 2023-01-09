@@ -1,19 +1,15 @@
 const express = require("express");
 const app = express();
-const morgan = require("morgan")
-var timeAgo = require('node-time-ago');
-app.use(express.static('public'))
-const postBank = require("./postBank")
-app.use(morgan('dev'));
+const morgan = require("morgan");
+var timeAgo = require("node-time-ago");
+app.use(express.static("public"));
+const postBank = require("./postBank");
+app.use(morgan("dev"));
 
-app.get("/", (req, res) =>{
-const posts = postBank.list()
+app.get("/", (req, res) => {
+  const posts = postBank.list();
 
-
-
-
-
-const html = `<!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html>
 <head>
   <title>Wizard News</title>
@@ -22,8 +18,10 @@ const html = `<!DOCTYPE html>
 <body>
   <div class="news-list">
     <header><img src="/logo.png"/>Wizard News</header>
-    ${posts.map(post => 
-      `
+    ${posts
+      .map(
+        (post) =>
+          `
       <div class='news-item'>
         <p>
           <span class="news-position">${post.id}. ▲</span>
@@ -31,25 +29,24 @@ const html = `<!DOCTYPE html>
           <small>(by ${post.name})</small>
         </p>
         <small class="news-info">
-          ${post.upvotes} upvotes | ${post.date}
+          ${post.upvotes} upvotes | ${timeAgo(post.date)}
         </small>
       </div>`
-    ).join('')}
+      )
+      .join("")}
   </div>
 </body>
-</html>`
-res.send(html);
-})
+</html>`;
+  res.send(html);
+});
 
-app.get('/posts/:id', (req, res) => {
-
+app.get("/posts/:id", (req, res) => {
   const id = req.params.id;
   const post = postBank.find(id);
   if (!post.id) {
-   
     throw new Error(
       app.use((err, req, res, next) => {
-        console.error(err.stack)
+        console.error(err.stack);
         res.status(500).send(`<!DOCTYPE html>
           <html>
           <head>
@@ -63,9 +60,9 @@ app.get('/posts/:id', (req, res) => {
               <img src="/dumbledore-404.gif" />
             </div>
           </body>
-          </html>`)
+          </html>`);
       })
-    )
+    );
   }
   const html = `<!DOCTYPE html>
   <html>
@@ -91,10 +88,9 @@ app.get('/posts/:id', (req, res) => {
   </body>
   </html>
 
-  `
+  `;
   res.send(html);
 });
- 
 
 const PORT = 1337;
 
